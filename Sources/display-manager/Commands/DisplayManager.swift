@@ -1,7 +1,3 @@
-/*
- * DisplayManager.swift
- * Created by François Lamboley on 2022/03/15. */
-
 import CoreGraphics
 import Foundation
 
