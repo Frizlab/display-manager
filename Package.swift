@@ -1,6 +1,12 @@
-// swift-tools-version:5.6
+// swift-tools-version:5.7
 import PackageDescription
 
+
+let commonSwiftSettings: [SwiftSetting] = [
+	.unsafeFlags(["-Xfrontend", "-strict-concurrency=complete"])
+	/* Swift 5.8+ only. */
+//	.enableExperimentalFeature("StrictConcurrency")
+]
 
 let package = Package(
 	name: "display-manager",
@@ -12,6 +18,6 @@ let package = Package(
 	targets: [
 		.executableTarget(name: "display-manager", dependencies: [
 			.product(name: "ArgumentParser", package: "swift-argument-parser")
-		])
+		], swiftSettings: commonSwiftSettings)
 	]
 )
