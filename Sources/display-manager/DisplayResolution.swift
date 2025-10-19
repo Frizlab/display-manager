@@ -8,7 +8,7 @@ enum DisplayResolution : Equatable {
 	
 	case `default`
 	case highest
-	case explicit(x: UInt, y: UInt)
+	case explicit(x: Int, y: Int, refreshRate: Double?)
 	
 }
 
@@ -18,7 +18,7 @@ extension DisplayResolution : RawRepresentable {
 		switch self {
 			case .default: return "default"
 			case .highest: return "highest"
-			case .explicit(let x, let y): return "\(x)×\(y)"
+			case .explicit(let x, let y, let r): return "\(x)×\(y)" + (r.map{ ":\($0)" } ?? "")
 		}
 	}
 	
@@ -27,16 +27,30 @@ extension DisplayResolution : RawRepresentable {
 			case "default": self = .default
 			case "highest": self = .highest
 			case let str:
-				let components = str.components(separatedBy: CharacterSet(charactersIn: "×x"))
-				guard components.count == 2 else {
+				let refreshRate: Double?
+				let componentsRefreshRate = str.components(separatedBy: ":")
+				switch componentsRefreshRate.count {
+					case 1:
+						refreshRate = nil
+					case 2:
+						guard let r = Double(componentsRefreshRate[1]) else {
+							return nil
+						}
+						refreshRate = r
+					default:
+						return nil
+				}
+				
+				let componentsResolution = componentsRefreshRate[0].components(separatedBy: CharacterSet(charactersIn: "×x"))
+				guard componentsResolution.count == 2 else {
 					return nil
 				}
-				guard let x = UInt(components[0]),
-						let y = UInt(components[1])
+				guard let x = Int(componentsResolution[0]),
+						let y = Int(componentsResolution[1])
 				else {
 					return nil
 				}
-				self = .explicit(x: x, y: y)
+				self = .explicit(x: x, y: y, refreshRate: refreshRate)
 		}
 	}
 	
