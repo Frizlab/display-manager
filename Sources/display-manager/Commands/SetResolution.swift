@@ -16,8 +16,12 @@ struct SetResolution : AsyncParsableCommand {
 	@Argument
 	var targetResolution: DisplayResolution
 	
+	@Argument
+	var displaySelectors: [DisplaySelector] = [.main]
+	
 	func run() async throws {
 		print(targetResolution)
+		print(displaySelectors)
 		
 		var count: UInt32 = 0
 		let err1 = CGGetOnlineDisplayList(32, nil, &count)
