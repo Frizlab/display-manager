@@ -13,6 +13,9 @@ struct SetMode : AsyncParsableCommand {
 		aliases: ["set-resolution", "mode", "res"]
 	)
 	
+	@Flag
+	var hiDPIFilter: HiDPIFilter = .noHiDPIFilter
+	
 	@Argument
 	var targetMode: DisplayModeDescription
 	
@@ -22,6 +25,7 @@ struct SetMode : AsyncParsableCommand {
 	func run() async throws {
 		print(targetMode)
 		print(displaySelectors)
+		print(hiDPIFilter)
 		
 		var count: UInt32 = 0
 		let err1 = CGGetOnlineDisplayList(32, nil, &count)
