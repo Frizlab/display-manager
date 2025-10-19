@@ -14,7 +14,7 @@ struct SetMode : AsyncParsableCommand {
 	)
 	
 	@Argument
-	var targetMode: DisplayMode
+	var targetMode: DisplayModeDescription
 	
 	@Argument
 	var displaySelectors: [DisplaySelector] = [.main]

@@ -4,7 +4,7 @@ import ArgumentParser
 
 
 
-enum DisplayMode : Equatable {
+enum DisplayModeDescription : Equatable {
 	
 	case `default`
 	case highest
@@ -12,7 +12,7 @@ enum DisplayMode : Equatable {
 	
 }
 
-extension DisplayMode : RawRepresentable {
+extension DisplayModeDescription : RawRepresentable {
 	
 	var rawValue: String {
 		switch self {
@@ -56,4 +56,4 @@ extension DisplayMode : RawRepresentable {
 	
 }
 
-extension DisplayMode : ExpressibleByArgument {}
+extension DisplayModeDescription : ExpressibleByArgument {}
