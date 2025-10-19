@@ -5,22 +5,22 @@ import ArgumentParser
 
 
 
-struct SetResolution : AsyncParsableCommand {
+struct SetMode : AsyncParsableCommand {
 	
 	static let configuration: CommandConfiguration = .init(
-		commandName: "set-resolution",
-		abstract: "Set the resolution of one or more displays.",
-		aliases: ["res"]
+		commandName: "set-mode",
+		abstract: "Set the mode (resolution, refresh rate, etc.) of one or more displays.",
+		aliases: ["set-resolution", "mode", "res"]
 	)
 	
 	@Argument
-	var targetResolution: DisplayResolution
+	var targetMode: DisplayMode
 	
 	@Argument
 	var displaySelectors: [DisplaySelector] = [.main]
 	
 	func run() async throws {
-		print(targetResolution)
+		print(targetMode)
 		print(displaySelectors)
 		
 		var count: UInt32 = 0
