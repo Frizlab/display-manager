@@ -55,6 +55,17 @@ struct Display {
 		self.id = id
 	}
 	
+	func getAllModes() throws -> [CGDisplayMode] {
+		let options = [kCGDisplayShowDuplicateLowResolutionModes: true] as CFDictionary
+		guard let cfModes = CGDisplayCopyAllDisplayModes(id, options) else {
+			throw Err.internalError(message: "Invalid display ID.")
+		}
+		guard let modes = cfModes as? [CGDisplayMode] else {
+			throw Err.internalError(message: "Invalid return value from CGDisplayCopyAllDisplayModes: not an array of CGDisplayMode.")
+		}
+		return modes
+	}
+	
 	private static func getAllDisplayIDs() throws -> [CGDirectDisplayID] {
 		var count: UInt32 = 0
 		let err1 = CGGetOnlineDisplayList(0, nil, &count)
