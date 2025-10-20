@@ -1,12 +1,30 @@
 {
   "pins" : [
     {
+      "identity" : "clt-logger",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/xcode-actions/clt-logger.git",
+      "state" : {
+        "revision" : "db7f3f71ace4e3bd316f98a52b9ee488bb2e66da",
+        "version" : "1.0.0"
+      }
+    },
+    {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser.git",
       "state" : {
         "revision" : "cdd0ef3755280949551dc26dee5de9ddeda89f54",
         "version" : "1.6.2"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "ce592ae52f982c847a4efc0dd881cc9eb32d29f2",
+        "version" : "1.6.4"
       }
     }
   ],

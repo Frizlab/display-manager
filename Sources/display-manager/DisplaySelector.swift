@@ -4,11 +4,11 @@ import ArgumentParser
 
 
 
-enum DisplaySelector : Equatable {
+enum DisplaySelector : Hashable {
 	
 	case all
 	case main
-	case external(UInt)
+	case external(Int)
 	
 }
 
@@ -30,7 +30,7 @@ extension DisplaySelector : RawRepresentable {
 			case "main": self = .main
 			case let str where str.hasPrefix(Self.externalDisplayPrefix):
 				let idxStr = str[str.index(str.startIndex, offsetBy: Self.externalDisplayPrefix.count)...]
-				guard let idx = UInt(idxStr) else {
+				guard let idx = Int(idxStr) else {
 					return nil
 				}
 				self = .external(idx)

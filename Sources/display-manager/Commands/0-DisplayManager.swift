@@ -1,6 +1,8 @@
 import Foundation
 
 import ArgumentParser
+import CLTLogger
+import Logging
 
 
 
@@ -14,5 +16,9 @@ struct DisplayManager : AsyncParsableCommand {
 			SetMode.self,
 		]
 	)
+	
+	static func bootstrap() {
+		LoggingSystem.bootstrap(CLTLogger.init, metadataProvider: nil)
+	}
 	
 }

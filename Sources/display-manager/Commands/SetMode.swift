@@ -23,29 +23,9 @@ struct SetMode : AsyncParsableCommand {
 	var displaySelectors: [DisplaySelector] = [.main]
 	
 	func run() async throws {
-		print(targetMode)
-		print(displaySelectors)
-		print(hiDPIFilter)
+		DisplayManager.bootstrap()
 		
-		var count: UInt32 = 0
-		let err1 = CGGetOnlineDisplayList(32, nil, &count)
-		guard err1 == .success else {
-			throw Err.cgError(err1)
-		}
-		guard count > 0 else {
-			return
-		}
-		let displayIDsPtr = UnsafeMutablePointer<CGDirectDisplayID>.allocate(capacity: Int(count))
-		defer {displayIDsPtr.deallocate()}
-		let err2 = CGGetOnlineDisplayList(count, displayIDsPtr, &count)
-		guard err2 == .success else {
-			throw Err.cgError(err1)
-		}
-		guard count > 0 else {
-			return
-		}
-		let displayIDs = (displayIDsPtr..<displayIDsPtr.advanced(by: Int(count))).reduce([], { $0 + [$1.pointee] })
-		print(displayIDs)
+		let displays = try Display.getAll(matching: Set(displaySelectors))
 	}
 	
 }
