@@ -55,7 +55,7 @@ struct Display {
 		self.id = id
 	}
 	
-	func getAllModes(onlyUsableForDesktopGUI: Bool = true, withDuplicatesLowResolution: Bool = true) throws -> [CGDisplayMode] {
+	func getAllModes(onlyUsableForDesktopGUI: Bool = true, withDuplicatesLowResolution: Bool = true, withInvalid: Bool = false) throws -> [CGDisplayMode] {
 		/* For some unknown reason, the mere presence of the kCGDisplayShowDuplicateLowResolutionModes key will enable duplicate low-resolution modes in the output of CGDisplayCopyAllDisplayModes.
 		 * I tried a lot of different values (kCFBooleanFalse, nil, NSNumber(value: 0), 2 -1…) and found none that did not activate that.
 		 * So we remove the key when we do not want the low resolution modes… */
@@ -69,7 +69,8 @@ struct Display {
 			throw Err.internalError(message: "Invalid return value from CGDisplayCopyAllDisplayModes: not an array of CGDisplayMode.")
 		}
 		return modes.filter{ mode in
-			!onlyUsableForDesktopGUI || mode.isUsableForDesktopGUI()
+			(!onlyUsableForDesktopGUI || mode.isUsableForDesktopGUI()) &&
+			( withInvalid             || mode.isValid)
 		}
 	}
 	
