@@ -84,6 +84,13 @@ struct Display {
 		return result
 	}
 	
+	func getCurrentMode() throws -> CGDisplayMode {
+		guard let mode = CGDisplayCopyDisplayMode(id) else {
+			throw Err.internalError(message: "Invalid display ID.")
+		}
+		return mode
+	}
+	
 	private static func getAllDisplayIDs() throws -> [CGDirectDisplayID] {
 		var count: UInt32 = 0
 		let err1 = CGGetOnlineDisplayList(0, nil, &count)
