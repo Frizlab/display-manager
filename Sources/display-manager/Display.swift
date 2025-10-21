@@ -55,15 +55,33 @@ struct Display {
 		self.id = id
 	}
 	
-	func getAllModes() throws -> [CGDisplayMode] {
-		let options = [kCGDisplayShowDuplicateLowResolutionModes: true] as CFDictionary
-		guard let cfModes = CGDisplayCopyAllDisplayModes(id, options) else {
+	func getAllModes(onlyUsableForDesktopGUI: Bool = true, withDuplicatesLowResolution: Bool = true) throws -> [CGDisplayMode] {
+		/* For some unknown reason, the mere presence of the kCGDisplayShowDuplicateLowResolutionModes key will enable duplicate low-resolution modes in the output of CGDisplayCopyAllDisplayModes.
+		 * I tried a lot of different values (kCFBooleanFalse, nil, NSNumber(value: 0), 2 -1…) and found none that did not activate that.
+		 * So we remove the key when we do not want the low resolution modes… */
+		let options: [CFString: Any] = [
+			kCGDisplayShowDuplicateLowResolutionModes: withDuplicatesLowResolution ? kCFBooleanTrue : nil
+		].compactMapValues(\.self)
+		guard let cfModes = CGDisplayCopyAllDisplayModes(id, options as CFDictionary?) else {
 			throw Err.internalError(message: "Invalid display ID.")
 		}
 		guard let modes = cfModes as? [CGDisplayMode] else {
 			throw Err.internalError(message: "Invalid return value from CGDisplayCopyAllDisplayModes: not an array of CGDisplayMode.")
 		}
-		return modes
+		return modes.filter{ mode in
+			!onlyUsableForDesktopGUI || mode.isUsableForDesktopGUI()
+		}
+	}
+	
+	func getDefaultMode() throws -> CGDisplayMode {
+		let candidates = try getAllModes(onlyUsableForDesktopGUI: false, withDuplicatesLowResolution: false).filter(\.isDefault)
+		guard let result = candidates.first else {
+			throw Err.noDefaultDisplayFound
+		}
+		guard candidates.count == 1 else {
+			throw Err.internalError(message: "More than one default display found.")
+		}
+		return result
 	}
 	
 	private static func getAllDisplayIDs() throws -> [CGDirectDisplayID] {

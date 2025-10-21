@@ -26,7 +26,8 @@ struct SetMode : AsyncParsableCommand {
 		DisplayManager.bootstrap()
 		
 		let displays = try Display.getAll(matching: Set(displaySelectors))
-		print(try displays.map{ try $0.getAllModes() })
+//		print(try displays.map{ try $0.getAllModes(withDuplicatesLowResolution: true).count })
+		print(try displays.map{ try $0.getDefaultMode() })
 	}
 	
 }

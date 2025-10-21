@@ -9,6 +9,8 @@ enum DisplayManagerError : Error {
 	case cgError(CGError)
 	case outOfBoundsDisplay(Int)
 	
+	case noDefaultDisplayFound
+	
 	case internalError(message: String)
 	
 }
