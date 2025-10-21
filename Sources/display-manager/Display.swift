@@ -74,7 +74,13 @@ struct Display {
 	}
 	
 	func getDefaultMode() throws -> CGDisplayMode {
-		let candidates = try getAllModes(onlyUsableForDesktopGUI: false, withDuplicatesLowResolution: false).filter(\.isDefault)
+		let candidates = try {
+			let candidatesNoLow = try getAllModes(onlyUsableForDesktopGUI: false, withDuplicatesLowResolution: false).filter(\.isDefault)
+			if !candidatesNoLow.isEmpty {
+				return candidatesNoLow
+			}
+			return try getAllModes(onlyUsableForDesktopGUI: false, withDuplicatesLowResolution: true).filter(\.isDefault)
+		}()
 		guard let result = candidates.first else {
 			throw Err.noDefaultDisplayFound
 		}
