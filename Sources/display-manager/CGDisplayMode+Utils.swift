@@ -10,4 +10,16 @@ extension CGDisplayMode {
 		return (ioFlags & UInt32(kDisplayModeDefaultFlag)) != 0
 	}
 	
+	var isNative: Bool {
+		(ioFlags & UInt32(kDisplayModeNativeFlag)) != 0
+	}
+	
+	var isValid: Bool {
+		(ioFlags & UInt32(kDisplayModeValidFlag)) != 0
+	}
+	
+	var isHiDPI: Bool {
+		width < pixelWidth && height < pixelHeight
+	}
+	
 }
