@@ -3,6 +3,8 @@ import Foundation
 
 import ArgumentParser
 
+import DisplayManagerObjC
+
 
 
 struct SetMode : AsyncParsableCommand {
@@ -24,6 +26,9 @@ struct SetMode : AsyncParsableCommand {
 	
 	func run() async throws {
 		DisplayManager.bootstrap()
+		
+		DPMDisplay.playground()
+		return
 		
 		let displays = try Display.getAll(matching: Set(displaySelectors))
 //		print(try displays.map{ try $0.getAllModes(withDuplicatesLowResolution: true).count })

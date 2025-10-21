@@ -102,7 +102,7 @@ struct Display {
 	/* Adapted from <https://medium.com/@zpcat/how-to-get-displays-device-name-by-iokit-in-mac-os-x-f91f42e8955>. */
 	func getIOServiceInfoDictionary() throws -> [String: AnyObject] {
 		var serialPortIterator: io_iterator_t = 0
-		let matching = IOServiceMatching("IODisplayConnect")
+		let matching = IOServiceMatching("IOFramebuffer") /* Note: Also works with “IODisplay” and “IODisplayConnect”. */
 		guard IOServiceGetMatchingServices(kIOMasterPortDefault, matching, &serialPortIterator) == KERN_SUCCESS,
 				serialPortIterator != 0
 		else {
@@ -123,8 +123,11 @@ struct Display {
 		
 		let iterator = IOIterator(serialPortIterator: serialPortIterator)
 		while let ioService = iterator.next() {
+//			var dictionaryPtr: Unmanaged<CFDictionary>?
+//			let ret = IODisplayCopyParameters(ioService, 0, &dictionaryPtr)
+//			print(dictionaryPtr?.takeRetainedValue())
 			guard let info = IODisplayCreateInfoDictionary(ioService, UInt32(kIODisplayOnlyPreferredName)).takeRetainedValue() as? [String: AnyObject] else {
-				Logger(label: "CGDirectDisplayID+Utils").warning("Failed retrieving IO info dictionary for IO service. Skipping this service.")
+				Logger(label: "Display").warning("Failed retrieving IO info dictionary for IO service. Skipping this service.")
 				continue
 			}
 			
