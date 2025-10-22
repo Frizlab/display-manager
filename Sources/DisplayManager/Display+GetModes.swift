@@ -37,7 +37,12 @@ public extension Display {
 				case (false, true): return true
 				case (true, false): return false
 				case (false, false), (true, true):
-					return mode1.width * mode1.height < mode2.width * mode2.height
+					let weight1 = mode1.width * mode1.height
+					let weight2 = mode2.width * mode2.height
+					if weight1 == weight2 {
+						return mode1.refreshRate < mode2.refreshRate
+					}
+					return weight1 < weight2
 			}
 		}.last
 		guard let highestMode else {
