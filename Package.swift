@@ -28,7 +28,5 @@ let package = Package(
 		.target(name: "DisplayManager", dependencies: [
 			.product(name: "Logging",        package: "swift-log"),
 		], swiftSettings: commonSwiftSettings),
-		
-//		.target(name: "DisplayManagerObjC"),
 	]
 )
