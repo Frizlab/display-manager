@@ -16,20 +16,26 @@ static void traverse_entry(io_registry_entry_t entry);
 
 + (void)playground
 {
+	CGDirectDisplayID mainDisplayID = CGMainDisplayID();
+	
 	io_iterator_t serialPortIterator = 0;
 //	ioreg -w0 -irc IOFramebuffer
-	CFMutableDictionaryRef matching = IOServiceMatching("IOGraphicsDevice"); /* Works with IODisplay and IODisplayConnect, but we do not get the same value as CGDisplayIOServicePort. */
+	/* On Intel (or macOS 15), also works with IODisplay and IODisplayConnect, but we do not get the same value as CGDisplayIOServicePort.
+	 * On M* (or macOS 26+), does not work at all (cannot even get the matching services).
+	 * We can get the matching services with `IOMobileFramebuffer` (from <https://stackoverflow.com/a/66818798>).
+	 * However we cannot get any screen info dictionary from the services we retrieve there.
+	 * It makes sense! After all even CGDisplayIOServicePort(CGMainDisplayID()) returns 0…
+	 * This is the final nail in the coffin of the IOKit trail for getting the correct supported modes of a display w/o duplicates…
+	 * (Especially what we wanted was to get ALL of the information of a mode, not just part of it…) */
+	CFMutableDictionaryRef matching = IOServiceMatching("IOGraphicsDevice");
 	if (IOServiceGetMatchingServices(kIOMasterPortDefault, matching, &serialPortIterator) != KERN_SUCCESS || serialPortIterator == 0) {
 		NSLog(@"Failed getting matching services.");
 		return;
 	}
 	
-	CGDirectDisplayID mainDisplayID = CGMainDisplayID();
 	io_object_t displayService = 0;
-	
 	for (io_object_t ioService = IOIteratorNext(serialPortIterator); ioService != 0; ioService = IOIteratorNext(serialPortIterator)) {
 		NSDictionary *info = (__bridge NSDictionary *)IODisplayCreateInfoDictionary(ioService, kIODisplayOnlyPreferredName);
-		/* TODO: Should the dictionary be released? (Yes, it should.) */
 		if (info == NULL) {
 			NSLog(@"Failed retrieving IO info dictionary for IO service. Skipping this service.");
 			continue;
