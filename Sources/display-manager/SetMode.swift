@@ -33,7 +33,23 @@ struct SetMode : AsyncParsableCommand {
 		for display in displays {
 			do {
 				let mode = try display.getMode(matching: targetMode, hiDPIFilter: hiDPIFilter)
-				print(mode)
+				
+				var config: CGDisplayConfigRef?
+				let beginConfigError = CGBeginDisplayConfiguration(&config)
+				guard beginConfigError == .success, let config else {
+					throw DisplayManagerError.cgError(beginConfigError)
+				}
+				let configError = CGConfigureDisplayWithDisplayMode(config, display.id, mode, nil)
+				guard configError == .success else {
+					if CGCancelDisplayConfiguration(config) != .success {
+						logger.error("Failed cancelling display configuration. There ain’t nothing I can do though…")
+					}
+					throw DisplayManagerError.cgError(configError)
+				}
+				let completeConfigError = CGCompleteDisplayConfiguration(config, .permanently)
+				guard completeConfigError == .success else {
+					throw DisplayManagerError.cgError(configError)
+				}
 			} catch {
 				logger.warning("Failed setting mode for a display.", metadata: ["display": "\(display)", "error": "\(error)"])
 				success = false
