@@ -5,6 +5,15 @@ import Foundation
 
 public extension Display {
 	
+	func getMode(matching modeDescription: DisplayModeDescription, hiDPIFilter: HiDPIFilter = .noHiDPIFilter) throws -> CGDisplayMode {
+		switch modeDescription {
+			case .default: return try getDefaultMode()
+			case .highest: return try getHighestMode(hiDPIFilter: hiDPIFilter)
+			case .explicit(let x, let y, let refreshRate):
+				return try getHighestModeMatching(width: x, height: y, refreshRate: refreshRate, hiDPIFilter: hiDPIFilter)
+		}
+	}
+	
 	func getCurrentMode() throws -> CGDisplayMode {
 		guard let mode = CGDisplayCopyDisplayMode(id) else {
 			throw Err.internalError(message: "Invalid display ID.")
@@ -29,26 +38,28 @@ public extension Display {
 	
 	func getHighestMode(hiDPIFilter: HiDPIFilter = .noHiDPIFilter, onlyUsableForDesktopGUI: Bool = true, withInvalid: Bool = false, withUnsafe: Bool = false) throws -> CGDisplayMode {
 		let modes = try getAllModes(hiDPIFilter: hiDPIFilter, onlyUsableForDesktopGUI: onlyUsableForDesktopGUI, withInvalid: withInvalid, withUnsafe: withUnsafe)
-		let highestMode = modes.sorted{ mode1, mode2 in
-			/* We prioritize HiDPI resolutions (put them at the end).
-			 * For the same width/height for a mode, the user will effectively have a higher resolution for the HiDIP one (greater pixel width/height).
-			 * We cannot only sort on pixel width/height either: the resolution for a given pixel width/height will probably be there twice: once in HiDPI, the other in normal resolution… */
-			switch (mode1.isHiDPI, mode2.isHiDPI) {
-				case (false, true): return true
-				case (true, false): return false
-				case (false, false), (true, true):
-					let weight1 = mode1.width * mode1.height
-					let weight2 = mode2.width * mode2.height
-					if weight1 == weight2 {
-						return mode1.refreshRate < mode2.refreshRate
-					}
-					return weight1 < weight2
-			}
-		}.last
+		let highestMode = modes.sorted(by: areModesSorted).last
 		guard let highestMode else {
 			throw Err.displayHasNoModes
 		}
 		return highestMode
+	}
+	
+	func getHighestModeMatching(width: Int, height: Int, refreshRate: Double?, hiDPIFilter: HiDPIFilter = .noHiDPIFilter, onlyUsableForDesktopGUI: Bool = true, withInvalid: Bool = false, withUnsafe: Bool = false) throws -> CGDisplayMode {
+		let modes = try getAllModes(hiDPIFilter: hiDPIFilter, onlyUsableForDesktopGUI: onlyUsableForDesktopGUI, withInvalid: withInvalid, withUnsafe: withUnsafe)
+		guard !modes.isEmpty else {
+			throw Err.displayHasNoModes
+		}
+		let highestMatch = modes
+			.filter{ mode in
+				mode.width == width && mode.height == height && (refreshRate.map{ mode.refreshRate == $0 } ?? true)
+			}
+			.sorted(by: areModesSorted)
+			.last
+		guard let highestMatch else {
+			throw Err.noMatchingDisplayModeFound
+		}
+		return highestMatch
 	}
 	
 	/** Retrieve all the display modes for the receiver. */
@@ -81,7 +92,23 @@ public extension Display {
 				( withInvalid             || mode.isValid) &&
 				( withUnsafe              || mode.isSafeForHardware)
 			}
-			.sorted{ $0.ioDisplayModeID < $1.ioDisplayModeID }
+	}
+	
+	private func areModesSorted(_ mode1: CGDisplayMode, _ mode2: CGDisplayMode) -> Bool {
+		/* We prioritize HiDPI resolutions (put them at the end).
+		 * For the same width/height for a mode, the user will effectively have a higher resolution for the HiDIP one (greater pixel width/height).
+		 * We cannot only sort on pixel width/height either: the resolution for a given pixel width/height will probably be there twice: once in HiDPI, the other in normal resolution… */
+		switch (mode1.isHiDPI, mode2.isHiDPI) {
+			case (false, true): return true
+			case (true, false): return false
+			case (false, false), (true, true):
+				let weight1 = mode1.width * mode1.height
+				let weight2 = mode2.width * mode2.height
+				if weight1 == weight2 {
+					return mode1.refreshRate < mode2.refreshRate
+				}
+				return weight1 < weight2
+		}
 	}
 	
 }

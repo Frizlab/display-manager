@@ -2,6 +2,7 @@ import CoreGraphics
 import Foundation
 
 import ArgumentParser
+import Logging
 
 import DisplayManager
 
@@ -27,17 +28,21 @@ struct SetMode : AsyncParsableCommand {
 	func run() async throws {
 		DisplayManager.bootstrap()
 		
+		var success = true
 		let displays = try Display.getAll(matching: Set(displaySelectors))
-		
-		guard let display = displays.first, displays.count == 1 else {
-			print("Oh no!")
-			return
+		for display in displays {
+			do {
+				let mode = try display.getMode(matching: targetMode, hiDPIFilter: hiDPIFilter)
+				print(mode)
+			} catch {
+				logger.warning("Failed setting mode for a display.", metadata: ["display": "\(display)", "error": "\(error)"])
+				success = false
+			}
 		}
 		
-		print(try display.getAllModes().count)
-//		print(try display.getDefaultMode())
-		print(try display.getHighestMode())
-//		return DPMDisplay.playground()
+		guard success else {
+			throw ExitCode(1)
+		}
 	}
 	
 }

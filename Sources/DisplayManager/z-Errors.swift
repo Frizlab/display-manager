@@ -10,6 +10,7 @@ public enum DisplayManagerError : Error {
 	
 	case displayHasNoModes
 	case noDefaultDisplayModeFound
+	case noMatchingDisplayModeFound
 	
 	case internalError(message: String)
 	
