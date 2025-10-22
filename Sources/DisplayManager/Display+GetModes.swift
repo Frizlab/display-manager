@@ -37,9 +37,8 @@ public extension Display {
 	}
 	
 	func getHighestMode(hiDPIFilter: HiDPIFilter = .noHiDPIFilter, onlyUsableForDesktopGUI: Bool = true, withInvalid: Bool = false, withUnsafe: Bool = false) throws -> CGDisplayMode {
-		let modes = try getAllModes(hiDPIFilter: hiDPIFilter, onlyUsableForDesktopGUI: onlyUsableForDesktopGUI, withInvalid: withInvalid, withUnsafe: withUnsafe)
-		let highestMode = modes.sorted(by: areModesSorted).last
-		guard let highestMode else {
+		let modes = try getAllModesSortedAscending(hiDPIFilter: hiDPIFilter, onlyUsableForDesktopGUI: onlyUsableForDesktopGUI, withInvalid: withInvalid, withUnsafe: withUnsafe)
+		guard let highestMode = modes.last else {
 			throw Err.displayHasNoModes
 		}
 		return highestMode
@@ -60,6 +59,11 @@ public extension Display {
 			throw Err.noMatchingDisplayModeFound
 		}
 		return highestMatch
+	}
+	
+	func getAllModesSortedAscending(hiDPIFilter: HiDPIFilter = .noHiDPIFilter, onlyUsableForDesktopGUI: Bool = true, withInvalid: Bool = false, withUnsafe: Bool = false) throws -> [CGDisplayMode] {
+		try getAllModes(hiDPIFilter: hiDPIFilter, onlyUsableForDesktopGUI: onlyUsableForDesktopGUI, withInvalid: withInvalid, withUnsafe: withUnsafe)
+			.sorted(by: areModesSorted)
 	}
 	
 	/** Retrieve all the display modes for the receiver. */

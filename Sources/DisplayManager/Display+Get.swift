@@ -10,15 +10,15 @@ public extension Display {
 	}
 	
 	static func getAll(matching selectors: Set<DisplaySelector>) throws -> [Display] {
+		try getAllWithResolvedSelector(matching: selectors).map(\.0)
+	}
+	
+	static func getAllWithResolvedSelector(matching selectors: Set<DisplaySelector>) throws -> [(Display, DisplaySelector)] {
 		guard !selectors.isEmpty else {
 			return []
 		}
-		guard !selectors.contains(.all) else {
-			return try Self.getAllDisplayIDs().map(Display.init(id:))
-		}
 		
 		let mainDisplayID = CGMainDisplayID()
-		
 		var _externalDisplayIDs: [CGDirectDisplayID]?
 		var externalDisplayIDs: [CGDirectDisplayID] {
 			get throws {
@@ -31,10 +31,17 @@ public extension Display {
 			}
 		}
 		
-		return try selectors.flatMap{ selector -> [CGDirectDisplayID] in
+		guard !selectors.contains(.all) else {
+			return try (
+				[(Display(id: mainDisplayID), .main)] +
+				externalDisplayIDs.enumerated().map{ (Display(id: $0.element), .external($0.offset + 1)) }
+			)
+		}
+		
+		return try selectors.map{ selector -> (Display, DisplaySelector) in
 			switch selector {
 				case .main:
-					return [mainDisplayID]
+					return (Display(id: mainDisplayID), selector)
 					
 				case .external(let idx):
 					let idx = idx - 1
@@ -42,13 +49,12 @@ public extension Display {
 					guard idx >= 0, idx < externalDisplayIDs.count else {
 						throw Err.outOfBoundsDisplay(idx + 1)
 					}
-					return [externalDisplayIDs[idx]]
+					return (Display(id: externalDisplayIDs[idx]), selector)
 					
 				case .all:
-					assertionFailure("This case should already have been handled.")
-					return try Self.getAllDisplayIDs()
+					fatalError("This case should already have been handled.")
 			}
-		}.map(Display.init(id:))
+		}
 	}
 	
 	private static func getAllDisplayIDs() throws -> [CGDirectDisplayID] {

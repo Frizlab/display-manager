@@ -14,6 +14,7 @@ struct DisplayManager : AsyncParsableCommand {
 		abstract: "Manage your displays via the command-line.",
 		subcommands: [
 			SetMode.self,
+			ShowModes.self,
 		]
 	)
 	
