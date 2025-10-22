@@ -19,7 +19,6 @@ let package = Package(
 	],
 	targets: [
 		.executableTarget(name: "display-manager", dependencies: [
-			.target(name: "DisplayManagerObjC"),
 			.product(name: "ArgumentParser", package: "swift-argument-parser"),
 			.product(name: "CLTLogger",      package: "clt-logger"),
 			.product(name: "Logging",        package: "swift-log"),
