@@ -28,7 +28,7 @@ import Foundation
  
  Then we iterate on all our `DisplayModeGroup` and remove the modes not present in the normal resolution modes if there is at least another mode in the group.
  
- Finally we should be left with an array of `DisplayModeGroup` that all contains only one mode.
+ Finally we should be left with an array of `DisplayModeGroup` that all contain only one mode.
  
  Interestingly, using the deprecated `CGDisplayAvailableModes` function (not available in Swift) works great without any hackery… */
 struct DisplayModeGroup {
