@@ -47,8 +47,9 @@ struct ShowModes : AsyncParsableCommand {
 			for mode in modes {
 				outputString += "  - \(displayModeToString(mode))\n"
 			}
+			outputString += "\n"
 		}
-		print(outputString)
+		print(outputString, terminator: "")
 	}
 	
 	private func displayModeToString(_ mode: CGDisplayMode) -> String {
