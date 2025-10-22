@@ -35,7 +35,8 @@ struct SetMode : AsyncParsableCommand {
 		}
 		
 		print(try display.getAllModes().count)
-		print(try display.getDefaultMode())
+//		print(try display.getDefaultMode())
+		print(try display.getHighestMode())
 //		return DPMDisplay.playground()
 	}
 	

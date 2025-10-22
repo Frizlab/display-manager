@@ -8,7 +8,8 @@ public enum DisplayManagerError : Error {
 	case cgError(CGError)
 	case outOfBoundsDisplay(Int)
 	
-	case noDefaultDisplayFound
+	case displayHasNoModes
+	case noDefaultDisplayModeFound
 	
 	case internalError(message: String)
 	

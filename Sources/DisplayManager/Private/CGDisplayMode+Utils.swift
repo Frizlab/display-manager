@@ -26,4 +26,12 @@ extension CGDisplayMode {
 		width < pixelWidth && height < pixelHeight
 	}
 	
+	func matchesHiDPIFilter(_ filter: HiDPIFilter) -> Bool {
+		switch filter {
+			case .noHiDPIFilter: return true
+			case .noHiDPI:       return !isHiDPI
+			case .onlyHiDPI:     return  isHiDPI
+		}
+	}
+	
 }
