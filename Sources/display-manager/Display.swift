@@ -99,7 +99,9 @@ struct Display {
 		return mode
 	}
 	
-	/* Adapted from <https://medium.com/@zpcat/how-to-get-displays-device-name-by-iokit-in-mac-os-x-f91f42e8955>. */
+	/* Adapted from <https://medium.com/@zpcat/how-to-get-displays-device-name-by-iokit-in-mac-os-x-f91f42e8955>.
+	 * Only works on Intel devices, most likely (or on macOS before 26). */
+	@available(*, deprecated, message: "This is unreliable af! It waaay to close to the hardware.")
 	func getIOServiceInfoDictionary() throws -> [String: AnyObject] {
 		var serialPortIterator: io_iterator_t = 0
 		let matching = IOServiceMatching("IOFramebuffer") /* Note: Also works with “IODisplay” and “IODisplayConnect”. */
