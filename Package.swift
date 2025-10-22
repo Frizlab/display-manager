@@ -13,8 +13,8 @@ let package = Package(
 	platforms: [.macOS(.v10_15)],
 	products: [.executable(name: "display-manager", targets: ["display-manager"])],
 	dependencies: [
-		.package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.1.0"),
-		.package(url: "https://github.com/apple/swift-log.git",             from: "1.6.4"),
+		.package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.5.0")), /* For Swift 5.7 (Apple failed to declare newer versions incompatible w/ it). */
+		.package(url: "https://github.com/apple/swift-log.git",             from: "1.5.0"),
 		.package(url: "https://github.com/xcode-actions/clt-logger.git",    from: "1.0.0"),
 	],
 	targets: [
@@ -24,5 +24,5 @@ let package = Package(
 			.product(name: "Logging",        package: "swift-log"),
 		], swiftSettings: commonSwiftSettings),
 		.target(name: "DisplayManagerObjC"),
-	],
+	]
 )

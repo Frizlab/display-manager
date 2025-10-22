@@ -62,7 +62,7 @@ struct Display {
 		 * So we remove the key when we do not want the low resolution modes… */
 		let options: [CFString: Any] = [
 			kCGDisplayShowDuplicateLowResolutionModes: withDuplicatesLowResolution ? kCFBooleanTrue : nil
-		].compactMapValues(\.self)
+		].compactMapValues{ $0 }
 		guard let cfModes = CGDisplayCopyAllDisplayModes(id, options as CFDictionary?) else {
 			throw Err.internalError(message: "Invalid display ID.")
 		}
