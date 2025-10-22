@@ -6,4 +6,4 @@ import DisplayManager
 
 
 
-extension DisplaySelector : @retroactive ExpressibleByArgument {}
+extension DisplaySelector : ArgumentParser.ExpressibleByArgument {}

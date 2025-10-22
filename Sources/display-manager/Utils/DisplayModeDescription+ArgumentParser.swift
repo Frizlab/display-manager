@@ -6,4 +6,4 @@ import DisplayManager
 
 
 
-extension DisplayModeDescription : @retroactive ExpressibleByArgument {}
+extension DisplayModeDescription : ArgumentParser.ExpressibleByArgument {}

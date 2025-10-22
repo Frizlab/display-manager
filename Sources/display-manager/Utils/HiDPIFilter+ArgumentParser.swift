@@ -6,5 +6,5 @@ import DisplayManager
 
 
 
-extension HiDPIFilter : @retroactive EnumerableFlag {
+extension HiDPIFilter : ArgumentParser.EnumerableFlag {
 }
