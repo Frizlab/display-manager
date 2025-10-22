@@ -54,11 +54,20 @@ static void traverse_entry(io_registry_entry_t entry);
 	}
 	if (displayService == 0) {
 		NSLog(@"Failed getting the display service with the complicated method…");
+		goto err;
 	} else if (displayService != CGDisplayIOServicePort(mainDisplayID)) {
 		NSLog(@"Huh?");
+		goto err;
 	} else {
 		NSLog(@"Found DisplayService using a super complicated method! And it matches the one found using a simple function call.");
 	}
+	CFDictionaryRef params;
+	if (IODisplayCopyParameters(displayService, 0, &params) == kIOReturnSuccess) {
+		NSLog(@"%@", params);
+	} else {
+		NSLog(@"Failed getting the params.");
+	}
+	NSLog(@"%@", IODisplayCreateInfoDictionary(displayService, 0));
 	
 err:
 	IOObjectRelease(serialPortIterator);
