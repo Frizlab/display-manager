@@ -34,13 +34,14 @@ struct ShowModes : AsyncParsableCommand {
 		var outputString = ""
 		let displays = try Display.getAllWithResolvedSelector(matching: Set(displaySelectors))
 		for (display, selector) in displays {
-			let modes =
+			let modes = try {
 				switch modeFilter {
-					case .current: try [display.getCurrentMode()]
-					case .default: try [display.getDefaultMode()]
-					case .highest: try [display.getHighestMode(hiDPIFilter: hiDPIFilter)]
-					case .available: try display.getAllModesSortedAscending(hiDPIFilter: hiDPIFilter)
+					case .current: return try [display.getCurrentMode()]
+					case .default: return try [display.getDefaultMode()]
+					case .highest: return try [display.getHighestMode(hiDPIFilter: hiDPIFilter)]
+					case .available: return try display.getAllModesSortedAscending(hiDPIFilter: hiDPIFilter)
 				}
+			}()
 			
 			outputString += "Display \(selector.rawValue):\n"
 			for mode in modes {
