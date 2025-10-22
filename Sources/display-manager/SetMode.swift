@@ -3,6 +3,8 @@ import Foundation
 
 import ArgumentParser
 
+import DisplayManager
+
 
 
 struct SetMode : AsyncParsableCommand {
@@ -26,8 +28,15 @@ struct SetMode : AsyncParsableCommand {
 		DisplayManager.bootstrap()
 		
 		let displays = try Display.getAll(matching: Set(displaySelectors))
-//		print(try displays.map{ try $0.getAllModes(withDuplicatesLowResolution: true).count })
-		print(try displays.map{ try $0.getDefaultMode() })
+		
+		guard let display = displays.first, displays.count == 1 else {
+			print("Oh no!")
+			return
+		}
+		
+		print(try display.getAllModes().count)
+		print(try display.getDefaultMode())
+//		return DPMDisplay.playground()
 	}
 	
 }

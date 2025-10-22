@@ -1,10 +1,8 @@
 import Foundation
 
-import ArgumentParser
 
 
-
-enum DisplaySelector : Hashable {
+public enum DisplaySelector : Hashable, Sendable {
 	
 	case all
 	case main
@@ -16,7 +14,7 @@ extension DisplaySelector : RawRepresentable {
 	
 	static let externalDisplayPrefix = "ext"
 	
-	var rawValue: String {
+	public var rawValue: String {
 		switch self {
 			case .all:  return "all"
 			case .main: return "main"
@@ -24,7 +22,7 @@ extension DisplaySelector : RawRepresentable {
 		}
 	}
 	
-	init?(rawValue: String) {
+	public init?(rawValue: String) {
 		switch rawValue {
 			case "all":  self = .all
 			case "main": self = .main
@@ -40,5 +38,3 @@ extension DisplaySelector : RawRepresentable {
 	}
 	
 }
-
-extension DisplaySelector : ExpressibleByArgument {}

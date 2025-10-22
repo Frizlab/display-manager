@@ -11,10 +11,16 @@ static void print_entry(io_registry_entry_t entry);
 static void traverse_entry(io_registry_entry_t entry);
 
 
-
 @implementation DPMDisplay
 
 + (void)playground
+{
+	CGDirectDisplayID mainDisplayID = CGMainDisplayID();
+	CFArrayRef allModes = CGDisplayAvailableModes(mainDisplayID);
+	NSLog(@"%lu", CFArrayGetCount(allModes));
+}
+
++ (void)playground_IOKitTests
 {
 	CGDirectDisplayID mainDisplayID = CGMainDisplayID();
 	
@@ -80,7 +86,7 @@ err:
 	return;
 }
 
-+ (void)printAllIORegistry
++ (void)playground_fullIORegistry
 {
 	mach_port_t masterPort;
 	io_registry_entry_t rootEntry;

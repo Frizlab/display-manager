@@ -1,10 +1,8 @@
 import Foundation
 
-import ArgumentParser
 
 
-
-enum DisplayModeDescription : Equatable {
+public enum DisplayModeDescription : Equatable, Sendable {
 	
 	case `default`
 	case highest
@@ -14,7 +12,7 @@ enum DisplayModeDescription : Equatable {
 
 extension DisplayModeDescription : RawRepresentable {
 	
-	var rawValue: String {
+	public var rawValue: String {
 		switch self {
 			case .default: return "default"
 			case .highest: return "highest"
@@ -22,7 +20,7 @@ extension DisplayModeDescription : RawRepresentable {
 		}
 	}
 	
-	init?(rawValue: String) {
+	public init?(rawValue: String) {
 		switch rawValue {
 			case "default": self = .default
 			case "highest": self = .highest
@@ -55,5 +53,3 @@ extension DisplayModeDescription : RawRepresentable {
 	}
 	
 }
-
-extension DisplayModeDescription : ExpressibleByArgument {}

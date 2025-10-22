@@ -3,8 +3,7 @@ import Foundation
 
 
 
-typealias Err = DisplayManagerError
-enum DisplayManagerError : Error {
+public enum DisplayManagerError : Error {
 	
 	case cgError(CGError)
 	case outOfBoundsDisplay(Int)
@@ -14,3 +13,4 @@ enum DisplayManagerError : Error {
 	case internalError(message: String)
 	
 }
+typealias Err = DisplayManagerError

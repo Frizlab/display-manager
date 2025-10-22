@@ -19,10 +19,16 @@ let package = Package(
 	],
 	targets: [
 		.executableTarget(name: "display-manager", dependencies: [
+			.target(name: "DisplayManager"),
 			.product(name: "ArgumentParser", package: "swift-argument-parser"),
 			.product(name: "CLTLogger",      package: "clt-logger"),
 			.product(name: "Logging",        package: "swift-log"),
 		], swiftSettings: commonSwiftSettings),
-		.target(name: "DisplayManagerObjC"),
+		
+		.target(name: "DisplayManager", dependencies: [
+			.product(name: "Logging",        package: "swift-log"),
+		], swiftSettings: commonSwiftSettings),
+		
+//		.target(name: "DisplayManagerObjC"),
 	]
 )

@@ -18,6 +18,10 @@ extension CGDisplayMode {
 		(ioFlags & UInt32(kDisplayModeValidFlag)) != 0
 	}
 	
+	var isSafeForHardware: Bool {
+		(ioFlags & UInt32(kDisplayModeSafeFlag)) != 0
+	}
+	
 	var isHiDPI: Bool {
 		width < pixelWidth && height < pixelHeight
 	}
