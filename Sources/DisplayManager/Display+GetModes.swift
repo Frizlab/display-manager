@@ -80,10 +80,10 @@ public extension Display {
 		let modeGroups = DisplayModeGroup.from(modesWithDuplicates)
 		
 		/* For some unknown reason, the mere presence of the kCGDisplayShowDuplicateLowResolutionModes key will enable duplicate low-resolution modes in the output of CGDisplayCopyAllDisplayModes.
-		 * I tried a lot of different values (kCFBooleanFalse, nil, NSNumber(value: 0), 2 -1…) and found none that did not activate that.
+		 * I tried a lot of different values (kCFBooleanFalse, nil, NSNumber(value: 0), 2, -1…) and found none that did not activate that.
 		 * So we remove the key when we do not want the low resolution modes… */
 		guard let cfModesNoDuplicates = CGDisplayCopyAllDisplayModes(id, [:] as CFDictionary) else {
-			throw Err.internalError(message: "Invalid display ID (but it was previously ok? that’s super weird…).")
+			throw Err.internalError(message: "Invalid display ID (but it was previously ok? that’s super weird! or you might have unplugged a device exactly at the wrong moment…).")
 		}
 		guard let modesNoDuplicates = cfModesNoDuplicates as? [CGDisplayMode] else {
 			throw Err.internalError(message: "Invalid return value from CGDisplayCopyAllDisplayModes: not an array of CGDisplayMode.")
